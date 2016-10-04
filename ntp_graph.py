@@ -1,10 +1,10 @@
-# -*- coding: utf-8 -*-
+#!/usr/bin/env python
 """
 Created on Tue Nov 10 15:29:02 2015
 
 @author: sybarra
 """
-import argparse
+import argparse, time, os, datetime
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_pdf import PdfPages
@@ -13,13 +13,28 @@ from matplotlib.backends.backend_pdf import PdfPages
 def ParseCommand():
     parser = argparse.ArgumentParser('Python tool to graph ntpq output .. ntpGraph.py')
     parser.add_argument('-f', '--fileName',
-                        help='Specify the input file(s). Enter multiple files separated by space',
-                        nargs='+')
+                        help='Specify the input file(s). Enter multiple files separated by space', nargs='+')
+    parser.add_argument('-d', '--duration', help='Specifiy the duration of the data collection.')
 
     global gbl_args
     global gbl_fileName
+    global gbl_duration
     gbl_args = parser.parse_args()
-    
+
+
+def CollectNtpData():
+    now = datetime.datetime.now()
+    start_time = time.time()
+
+    while (time.time() - start_time) < end_time:
+    	print ""
+    	print ""
+    	print now.strftime("%y-%m-%d %H:%M:%S")
+    	os.system("ntpq -pn")
+    	time.sleep(1) #Sleep 30 min
+
+    get_ntp_status()
+
 
 def GetHeaders(infile):
     for line in infile:
@@ -81,7 +96,6 @@ if __name__ in '__main__':
         inList = NtpqParse(infile)
         data = ArrayFromList(inList)
         GraphNtpq(data, fileName)
-        plt.show()
 
     pp.close()
 
